@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    .claim-container {
+        max-width: 700px;
+        margin: 2rem auto;
+    }
+
+    .claim-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .claim-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .claim-header h2 {
+        color: white;
+        margin: 0;
+        font-size: 2rem;
+    }
+
+    .claim-header p {
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0.5rem 0 0 0;
+    }
+
+    .item-preview {
+        padding: 2rem;
+        background: #f8f9fc;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .preview-item {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        border-left: 4px solid #667eea;
+    }
+
+    .preview-item h5 {
+        color: #667eea;
+        margin: 0 0 0.5rem 0;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+    }
+
+    .preview-item h4 {
+        margin: 0.5rem 0 1rem 0;
+        font-size: 1.5rem;
+    }
+
+    .preview-detail {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 0.8rem 0;
+        color: #8892b0;
+        font-size: 0.95rem;
+    }
+
+    .preview-detail i {
+        color: #667eea;
+        width: 20px;
+        text-align: center;
+    }
+
+    .claim-form {
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 0.95rem;
+    }
+
+    .form-help-text {
+        display: block;
+        margin-top: 0.4rem;
+        font-size: 0.85rem;
+        color: #8892b0;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        border: 2px dashed #e0e0e0;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        background: #fafbfc;
+        cursor: pointer;
+    }
+
+    .file-input-wrapper:hover {
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.05);
+    }
+
+    .file-input-wrapper input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .file-input-icon {
+        font-size: 3rem;
+        color: #667eea;
+        margin-bottom: 0.5rem;
+    }
+
+    .file-input-text {
+        color: #2c3e50;
+        font-weight: 600;
+    }
+
+    .file-input-hint {
+        color: #8892b0;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-submit {
+        flex: 1;
+        padding: 1rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-cancel {
+        flex: 1;
+        padding: 1rem;
+        background: white;
+        color: #2c3e50;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-cancel:hover {
+        border-color: #667eea;
+        color: #667eea;
+        background: rgba(102, 126, 234, 0.05);
+    }
+
+    @media (max-width: 768px) {
+        .claim-container {
+            margin: 1rem;
+        }
+
+        .claim-header {
+            padding: 1.5rem;
+        }
+
+        .claim-form {
+            padding: 1.5rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="claim-container">
+    <div class="claim-card">
+        <div class="claim-header">
+            <h2><i class="fas fa-flag"></i> Claim This Item</h2>
+            <p>Verify that this item belongs to you</p>
+        </div>
+
+        <div class="item-preview">
+            <div class="preview-item">
+                <h5>Item Details</h5>
+                <h4>{{ item.title }}</h4>
+
+                <div class="preview-detail">
+                    <i class="fas fa-align-left"></i>
+                    <span>{{ item.description }}</span>
+                </div>
+
+                <div class="preview-detail">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>{{ item.location }}</span>
+                </div>
+
+                <div class="preview-detail">
+                    <i class="fas fa-calendar"></i>
+                    <span>{{ item.date|timesince }} ago</span>
+                </div>
+
+                <div class="preview-detail">
+                    <i class="fas fa-user"></i>
+                    <span>Posted by <strong>{{ item.user.username }}</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="claim-form">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-message"></i> Why is this item yours?
+                    </label>
+                    <textarea name="message" class="form-control" placeholder="Please provide specific details that prove this is your item..." required></textarea>
+                    <span class="form-help-text">Be detailed to increase approval chances</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-image"></i> Upload Proof
+                    </label>
+                    <label class="file-input-wrapper">
+                        <input type="file" name="proof" accept="image/*" required>
+                        <div>
+                            <div class="file-input-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="file-input-text">Click to upload or drag and drop</div>
+                            <div class="file-input-hint">Photo of item, ID, or receipt</div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-check"></i> Submit Claim
+                    </button>
+                    <a href="/" class="btn-cancel">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

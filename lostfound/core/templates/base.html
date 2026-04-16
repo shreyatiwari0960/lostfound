@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lostfound - Smart Lost & Found System</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-light: #667eea;
+            --primary-dark: #764ba2;
+            --success: #4CAF50;
+            --danger: #FF6B6B;
+            --warning: #FFB547;
+            --info: #00BCD4;
+            --bg-light: #f8f9fc;
+            --bg-lighter: #ffffff;
+            --text-dark: #2c3e50;
+            --text-muted: #8892b0;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.15);
+            --border-radius: 16px;
+        }
+
+        body {
+            background: var(--bg-light);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ==================== NAVBAR ==================== */
+        .navbar {
+            background: var(--bg-lighter);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-sm);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .navbar-brand {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+            margin-right: 2rem;
+        }
+
+        .navbar-brand i {
+            color: var(--primary-light);
+            margin-right: 0.5rem;
+        }
+
+        .navbar-brand-tagline {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 500;
+            opacity: 0.9;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: -2px;
+        }
+
+        .navbar .container-fluid {
+            padding: 0 2rem;
+        }
+
+        /* Navbar search */
+        .navbar-search {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 2rem;
+        }
+
+        .navbar-search input {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            background: #f5f7fa;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .navbar-search input:focus {
+            background: white;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .navbar-search button {
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-left: 0.5rem;
+        }
+
+        .navbar-search button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Navbar right section */
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .navbar-greeting {
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding-right: 1rem;
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-bell {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--primary-light);
+        }
+
+        .navbar-bell:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: scale(1.1);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+        }
+
+        .navbar-btn {
+            padding: 0.6rem 1.3rem;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .navbar-btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .navbar-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .navbar-btn-secondary {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-btn-secondary:hover {
+            background: white;
+            border-color: var(--primary-light);
+        }
+
+        .navbar-btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .navbar-btn-danger:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* ==================== CONTAINERS & SPACING ==================== */
+        .container-main {
+            padding: 3rem 0;
+            min-height: 100vh;
+        }
+
+        .app-alerts {
+            margin-bottom: 1.5rem;
+        }
+
+        .app-alerts .alert {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-once-disabled,
+        .link-once-disabled {
+            opacity: 0.65;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        /* ==================== CARDS ==================== */
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-8px);
+        }
+
+        .card-img-wrapper {
+            position: relative;
+            overflow: hidden;
+            height: 220px;
+            background: #f0f0f0;
+        }
+
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .card:hover .card-img-wrapper img {
+            transform: scale(1.08);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .card-text {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-badge {
+            display: inline-block;
+            padding: 0.4rem 0.9rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-badge-lost {
+            background: rgba(255, 107, 107, 0.1);
+            color: var(--danger);
+        }
+
+        .card-badge-found {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+
+        .card-badge-resolved {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-muted);
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .card-meta i {
+            color: var(--primary-light);
+            width: 16px;
+            text-align: center;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        /* ==================== BUTTONS ==================== */
+        .btn {
+            border: none;
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: white;
+        }
+
+        .btn-primary-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            border-color: var(--primary-light);
+            color: var(--primary-light);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        /* ==================== TYPOGRAPHY ==================== */
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-dark);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: 3rem;
+            letter-spacing: -1px;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ==================== FOOTER ==================== */
+        footer {
+            background: var(--bg-lighter);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 3rem 0;
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 5rem;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .footer-title {
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .footer-meta {
+            margin-top: 0.6rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-meta a {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+
+        .footer-meta a:hover {
+            text-decoration: underline;
+        }
+
+        /* ==================== UTILITIES ==================== */
+        .gap-md { gap: 2rem !important; }
+        .gap-lg { gap: 3rem !important; }
+
+        .text-primary-gradient {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .navbar-search {
+                max-width: 100%;
+                margin: 1rem 0;
+            }
+
+            .navbar .container-fluid {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .card-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .card-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/" style="display: flex; align-items: center;">
+            <i class="fas fa-search"></i>
+            <span>lostfound<span class="navbar-brand-tagline" style="display: block; margin-top: 2px; font-size: 0.65rem;">Smart Lost & Found</span></span>
+        </a>
+
+        <form method="GET" action="/" class="navbar-search">
+            <div class="d-flex">
+                <input type="text" name="q" placeholder="Search items..." value="{{ search_query }}">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+
+        <div class="navbar-right">
+            {% if user.is_authenticated %}
+                <span class="navbar-greeting">
+                    <i class="fas fa-user-circle"></i> {{ user.username }}
+                </span>
+
+                <a href="/notifications/" class="navbar-bell">
+                    <i class="fas fa-bell"></i>
+                    {% if unread_count %}
+                    <span class="notification-badge">{{ unread_count }}</span>
+                    {% endif %}
+                </a>
+
+                <a href="/dashboard/" class="navbar-btn navbar-btn-secondary">Dashboard</a>
+                <a href="/add/" class="navbar-btn navbar-btn-primary">+ Add Item</a>
+                <a href="/logout/" class="navbar-btn navbar-btn-danger">Logout</a>
+            {% else %}
+                <a href="/login/" class="navbar-btn navbar-btn-secondary">Login</a>
+                <a href="/register/" class="navbar-btn navbar-btn-primary">Register</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="container-main">
+    <div class="container">
+        {% if messages %}
+        <div class="app-alerts">
+            {% for message in messages %}
+            <div class="alert alert-{% if 'error' in message.tags %}danger{% elif 'success' in message.tags %}success{% elif 'warning' in message.tags %}warning{% else %}info{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="container">
+        <p class="footer-title">lostfound</p>
+        <p>Smart Lost & Found System</p>
+        <p class="footer-meta">lostfound © 2026 | Helping people reconnect with their valuables</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('[data-confirm]').forEach(function (el) {
+            el.addEventListener('click', function (event) {
+                var message = el.getAttribute('data-confirm') || 'Are you sure?';
+                if (!window.confirm(message)) {
+                    event.preventDefault();
+                }
+            });
+        });
+
+        document.querySelectorAll('form').forEach(function (form) {
+            form.addEventListener('submit', function () {
+                var method = (form.getAttribute('method') || '').toUpperCase();
+                if (method !== 'POST') {
+                    return;
+                }
+
+                form.querySelectorAll('button[type="submit"], input[type="submit"]').forEach(function (btn) {
+                    btn.disabled = true;
+                    btn.classList.add('btn-once-disabled');
+                });
+            });
+        });
+
+        document.querySelectorAll('.js-once').forEach(function (el) {
+            el.addEventListener('click', function () {
+                el.classList.add('link-once-disabled');
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

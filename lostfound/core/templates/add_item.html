@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card shadow p-4">
+            <h2 class="mb-4" style="color: #667eea;">
+                {% if item %}
+                    Edit Item
+                {% else %}
+                    Post Lost or Found Item
+                {% endif %}
+            </h2>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input type="text" name="title" class="form-control" value="{{ item.title|default:'' }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-control" rows="4" required>{{ item.description|default:'' }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <input type="text" name="category" class="form-control" placeholder="e.g., Wallet, Phone, Keys" value="{{ item.category|default:'' }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Location</label>
+                    <input type="text" name="location" class="form-control" placeholder="Where did you lose/find it?" value="{{ item.location|default:'' }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Date</label>
+                    <input type="date" name="date" class="form-control" value="{{ item.date|default:'' }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Image</label>
+                    <input type="file" name="image" class="form-control">
+                    {% if item.image %}
+                    <small class="text-muted">Current: {{ item.image.name }}</small>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Item Type</label>
+                    <select name="item_type" class="form-control" required>
+                        <option value="">-- Select --</option>
+                        <option value="LOST" {% if item.item_type == 'LOST' %}selected{% endif %}>Lost Item</option>
+                        <option value="FOUND" {% if item.item_type == 'FOUND' %}selected{% endif %}>Found Item</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                    {% if item %}
+                        Update Item
+                    {% else %}
+                        Post Item
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
