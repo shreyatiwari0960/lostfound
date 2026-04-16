@@ -14,8 +14,11 @@ env/
 *.log
 local_settings.py
 db.sqlite3
+lostfound/db.sqlite3
 media/
+lostfound/media/
 staticfiles/
+lostfound/staticfiles/
 
 # VS Code
 .vscode/

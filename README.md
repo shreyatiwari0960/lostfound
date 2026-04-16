@@ -99,6 +99,37 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
+## Deploy on Render
+
+This repository is now Render-ready.
+
+### What was changed for deployment
+
+- Production-friendly settings in [lostfound/lostfound/settings.py](lostfound/lostfound/settings.py)
+- Root dependencies file: [requirements.txt](requirements.txt)
+- Render blueprint file: [render.yaml](render.yaml)
+- Static serving via WhiteNoise
+- Database URL support via dj-database-url
+
+### Render setup steps
+
+1. Push the latest code to GitHub.
+2. Open Render and choose New + then Blueprint.
+3. Select this repository: shreyatiwari0960/lostfound.
+4. Render will read [render.yaml](render.yaml) and create the web service.
+5. After first deploy, open Environment tab and confirm variables:
+   - SECRET_KEY (auto-generated)
+   - DEBUG = False
+   - ALLOWED_HOSTS = .onrender.com
+   - CSRF_TRUSTED_ORIGINS = https://*.onrender.com
+6. If you want persistent production data, create a Render PostgreSQL database and set DATABASE_URL in the web service environment.
+
+### Notes for production
+
+- SQLite works for basic/demo usage but is not recommended for long-term production.
+- Media uploads in free tier instances are ephemeral unless you use external object storage.
+- Every new commit pushed to main will trigger an auto-deploy on Render.
+
 ## Publishing and Keeping GitHub Updated
 
 This project is set up so every change becomes visible on GitHub after push.
